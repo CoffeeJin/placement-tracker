@@ -22,7 +22,7 @@ pipeline {
             }
         }
 
-        stage('Backend deps') {
+        stage('Backend') {
             steps {
                 sh '''
                     cd ${DEPLOY_DIR}/backend
@@ -33,7 +33,7 @@ pipeline {
             }
         }
 
-        stage('Frontend build') {
+        stage('Frontend') {
             steps {
                 sh '''
                     cd ${DEPLOY_DIR}/frontend
@@ -44,7 +44,7 @@ pipeline {
             }
         }
 
-        stage('Restart services') {
+        stage('Deploy') {
             steps {
                 sh '''
                     sudo systemctl restart placement-backend
