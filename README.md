@@ -59,3 +59,6 @@ Visit http://localhost:5173 and log in with the account you just created.
 - `supervisor_interns` table: binding relationship between supervisors and interns — currently an empty table.
 - `status` and `reviewer_id` fields on `placement_logs` / `reflection_notes`: currently always `draft`; can be used directly once the review feature is added.
 - Backend authorization currently only enforces "users can edit their own records" — the cross-user viewing logic for supervisors needs to be implemented properly (in the backend, not just hidden in the frontend) when the supervisor feature is added.
+
+
+## TODO
