@@ -21,7 +21,7 @@ export default {
         amber: "#C08A2E",
       },
       fontFamily: {
-        display: ["'Fraunces'", "serif"],
+        display: ["Georgia", "'Times New Roman'", "serif"],
         body: ["'Inter'", "sans-serif"],
       },
       borderRadius: {
