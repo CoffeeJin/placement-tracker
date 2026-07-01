@@ -17,16 +17,16 @@ def download_attachment(
 ):
     attachment = db.query(models.Attachment).filter(models.Attachment.id == attachment_id).first()
     if not attachment:
-        raise HTTPException(status_code=404, detail="附件不存在")
+        raise HTTPException(status_code=404, detail="Attachment not found")
 
-    # 权限校验：只有笔记所有者可以下载（supervisor 的访问权限留待 review 功能实现）
+    # Authorization: only the note owner can download it (supervisor access is deferred to the review feature).
     if attachment.note_type == models.NoteType.placement_log:
         note = db.query(models.PlacementLog).filter(models.PlacementLog.id == attachment.note_id).first()
     else:
         note = db.query(models.ReflectionNote).filter(models.ReflectionNote.id == attachment.note_id).first()
 
     if not note or note.user_id != user.id:
-        raise HTTPException(status_code=403, detail="无权访问此附件")
+        raise HTTPException(status_code=403, detail="You do not have permission to access this attachment")
 
     return FileResponse(
         attachment.file_path,

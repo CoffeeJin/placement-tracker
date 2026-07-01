@@ -46,7 +46,7 @@ class User(Base):
     password_hash = Column(String(255), nullable=False)
     full_name = Column(String(120), nullable=False)
     role = Column(Enum(UserRole), nullable=False, default=UserRole.student)
-    is_active = Column(Integer, default=1)  # 1=active, 0=disabled，先用整型避免布尔在不同库的兼容问题
+    is_active = Column(Integer, default=1)  # 1=active, 0=disabled; using an integer to avoid boolean compatibility issues across databases
     created_at = Column(DateTime, default=datetime.utcnow)
 
     placement_logs = relationship("PlacementLog", back_populates="user", foreign_keys="PlacementLog.user_id")
@@ -54,7 +54,7 @@ class User(Base):
     case_notes = relationship("CaseNote", back_populates="user")
 
 
-# ---- 预留：supervisor - intern 绑定关系表（MVP 阶段先建空表，不接 API）----
+# ---- Reserved: supervisor-intern binding table (empty table for now during MVP stage, no API) ----
 class SupervisorIntern(Base):
     __tablename__ = "supervisor_interns"
 
@@ -75,7 +75,7 @@ class PlacementLog(Base):
     placement_type = Column(String(100), nullable=False)
     notes = Column(Text, nullable=True)
 
-    # 预留：审核状态字段，MVP 阶段默认 draft，不做审核界面
+    # Reserved: review status field, defaults to draft during the MVP stage; no review UI yet
     status = Column(Enum(NoteStatus), nullable=False, default=NoteStatus.draft)
     reviewer_id = Column(UUID(as_uuid=False), ForeignKey("users.id"), nullable=True)
 
@@ -105,21 +105,21 @@ class ReflectionNote(Base):
     user = relationship("User", back_populates="reflection_notes", foreign_keys=[user_id])
 
 
-# ---- 预留：Case Note 表结构，MVP 阶段先建表，不做 API / 界面 ----
+# ---- Reserved: Case Note table structure. Table is created during MVP stage, no API / UI yet ----
 class CaseNote(Base):
     __tablename__ = "case_notes"
 
     id = Column(UUID(as_uuid=False), primary_key=True, default=gen_uuid)
     user_id = Column(UUID(as_uuid=False), ForeignKey("users.id"), nullable=False)
-    case_ref = Column(String(50), nullable=False)  # 内部编号，如 CASE-2026-001
-    client_ref = Column(String(50), nullable=False)  # 去标识化的服务对象编号，不存真实姓名
+    case_ref = Column(String(50), nullable=False)  # internal reference number, e.g. CASE-2026-001
+    client_ref = Column(String(50), nullable=False)  # de-identified client reference; real names are not stored
     status = Column(Enum(CaseStatus), nullable=False, default=CaseStatus.ongoing)
     date = Column(Date, nullable=False)
     presenting_issue = Column(Text, nullable=True)
     intervention = Column(Text, nullable=True)
     plan = Column(Text, nullable=True)
     risk_assessment = Column(Text, nullable=True)
-    closed_summary = Column(Text, nullable=True)  # 结案说明，status=closed 时建议必填（后续在 API 层加校验）
+    closed_summary = Column(Text, nullable=True)  # case closure summary; should be required when status=closed (add validation at the API layer later)
 
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -127,7 +127,7 @@ class CaseNote(Base):
     user = relationship("User", back_populates="case_notes")
 
 
-# ---- 预留：case note 与 placement log / reflection note 的关联表（多对多）----
+# ---- Reserved: many-to-many link table between case notes and placement logs / reflection notes ----
 class CaseNoteLink(Base):
     __tablename__ = "case_note_links"
 
@@ -151,7 +151,7 @@ class Attachment(Base):
     uploaded_at = Column(DateTime, default=datetime.utcnow)
 
 
-# ---- 预留：Feedback 表，MVP 阶段先建表，不接 API ----
+# ---- Reserved: Feedback table. Table is created during MVP stage, no API yet ----
 class Feedback(Base):
     __tablename__ = "feedback"
 
@@ -160,5 +160,5 @@ class Feedback(Base):
     note_type = Column(Enum(NoteType), nullable=False)
     supervisor_id = Column(UUID(as_uuid=False), ForeignKey("users.id"), nullable=False)
     comment = Column(Text, nullable=False)
-    is_read = Column(Integer, default=0)  # 0=未读, 1=已读，用于 dashboard todo
+    is_read = Column(Integer, default=0)  # 0=unread, 1=read; used for the dashboard todo list
     created_at = Column(DateTime, default=datetime.utcnow)

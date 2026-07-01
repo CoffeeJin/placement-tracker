@@ -13,7 +13,7 @@ def summary(db: Session = Depends(get_db), user: models.User = Depends(get_curre
     log_count = db.query(models.PlacementLog).filter(models.PlacementLog.user_id == user.id).count()
     reflection_count = db.query(models.ReflectionNote).filter(models.ReflectionNote.user_id == user.id).count()
 
-    # 预留：case note 与 feedback 统计，MVP 阶段功能未上线，暂时恒为 0
+    # Reserved: case note and feedback counts. Not yet live in the MVP stage, so always 0 for now.
     open_case_count = 0
     unread_feedback_count = 0
 

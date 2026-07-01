@@ -7,7 +7,7 @@ export default function ProtectedRoute({ children }) {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center text-slate-600 text-sm">
-        加载中…
+        Loading…
       </div>
     )
   }

@@ -15,9 +15,9 @@ router = APIRouter(prefix="/reflection-notes", tags=["reflection-notes"])
 def _get_owned_note(db: Session, note_id: str, user: models.User) -> models.ReflectionNote:
     note = db.query(models.ReflectionNote).filter(models.ReflectionNote.id == note_id).first()
     if not note:
-        raise HTTPException(status_code=404, detail="记录不存在")
+        raise HTTPException(status_code=404, detail="Record not found")
     if note.user_id != user.id:
-        raise HTTPException(status_code=403, detail="无权访问此记录")
+        raise HTTPException(status_code=403, detail="You do not have permission to access this record")
     return note
 
 
@@ -60,7 +60,7 @@ def update_note(
 ):
     note = _get_owned_note(db, note_id, user)
     if note.status == models.NoteStatus.reviewed:
-        raise HTTPException(status_code=400, detail="该记录已审核，无法修改")
+        raise HTTPException(status_code=400, detail="This record has already been reviewed and cannot be modified")
     for field, value in payload.model_dump(exclude_unset=True).items():
         setattr(note, field, value)
     db.commit()
@@ -72,7 +72,7 @@ def update_note(
 def delete_note(note_id: str, db: Session = Depends(get_db), user: models.User = Depends(get_current_user)):
     note = _get_owned_note(db, note_id, user)
     if note.status == models.NoteStatus.reviewed:
-        raise HTTPException(status_code=400, detail="该记录已审核，无法删除")
+        raise HTTPException(status_code=400, detail="This record has already been reviewed and cannot be deleted")
     db.delete(note)
     db.commit()
     return {"ok": True}
@@ -90,13 +90,13 @@ async def upload_attachment(
     contents = await file.read()
     max_bytes = settings.MAX_UPLOAD_SIZE_MB * 1024 * 1024
     if len(contents) > max_bytes:
-        raise HTTPException(status_code=400, detail=f"文件超过 {settings.MAX_UPLOAD_SIZE_MB}MB 限制")
+        raise HTTPException(status_code=400, detail=f"File exceeds the {settings.MAX_UPLOAD_SIZE_MB}MB limit")
 
     allowed_types = {"image/png", "image/jpeg", "image/gif", "image/webp", "application/pdf",
                       "application/msword",
                       "application/vnd.openxmlformats-officedocument.wordprocessingml.document"}
     if file.content_type not in allowed_types:
-        raise HTTPException(status_code=400, detail="不支持的文件类型")
+        raise HTTPException(status_code=400, detail="Unsupported file type")
 
     os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
     ext = os.path.splitext(file.filename)[1]

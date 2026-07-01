@@ -51,12 +51,12 @@ export default function ReflectionNotes() {
       setShowForm(false)
       await loadNotes()
     } catch (err) {
-      setError(err.response?.data?.detail || '保存失败')
+      setError(err.response?.data?.detail || 'Save failed')
     }
   }
 
   const handleDelete = async (id) => {
-    if (!confirm('确定要删除这条记录吗？')) return
+    if (!confirm('Are you sure you want to delete this record?')) return
     await client.delete(`/reflection-notes/${id}`)
     if (selected?.id === id) setSelected(null)
     await loadNotes()
@@ -79,7 +79,7 @@ export default function ReflectionNotes() {
       })
       await openDetail(selected.id)
     } catch (err) {
-      alert(err.response?.data?.detail || '上传失败')
+      alert(err.response?.data?.detail || 'Upload failed')
     } finally {
       setUploading(false)
       e.target.value = ''
@@ -90,13 +90,13 @@ export default function ReflectionNotes() {
     <Layout>
       <div className="flex items-center justify-between mb-6">
         <h1 className="font-display text-2xl text-ink font-semibold">Reflection Notes</h1>
-        <button className="btn-primary" onClick={openCreate}>+ 新增记录</button>
+        <button className="btn-primary" onClick={openCreate}>+ New Entry</button>
       </div>
 
       <div className="grid grid-cols-2 gap-6">
         <div className="space-y-3">
           {notes.length === 0 && (
-            <p className="text-sm text-slate-400">还没有记录，点击右上角开始添加。</p>
+            <p className="text-sm text-slate-400">No records yet. Click the button above to add one.</p>
           )}
           {notes.map((note) => (
             <div
@@ -116,38 +116,38 @@ export default function ReflectionNotes() {
         <div>
           {showForm ? (
             <form onSubmit={handleSubmit} className="card p-5 space-y-4">
-              <h2 className="font-medium text-ink">{editingId ? '编辑记录' : '新增记录'}</h2>
+              <h2 className="font-medium text-ink">{editingId ? 'Edit Entry' : 'New Entry'}</h2>
               <div>
-                <label className="label-text">日期</label>
+                <label className="label-text">Date</label>
                 <input type="date" required className="input-field"
                   value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
               </div>
               <div>
-                <label className="label-text">地点</label>
+                <label className="label-text">Location</label>
                 <input required className="input-field"
                   value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} />
               </div>
               <div>
-                <label className="label-text">主题</label>
+                <label className="label-text">Topic</label>
                 <input required className="input-field"
                   value={form.topic} onChange={(e) => setForm({ ...form, topic: e.target.value })} />
               </div>
               <div>
-                <label className="label-text">实习类型</label>
+                <label className="label-text">Placement Type</label>
                 <select className="input-field" value={form.placement_type}
                   onChange={(e) => setForm({ ...form, placement_type: e.target.value })}>
                   {PLACEMENT_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
                 </select>
               </div>
               <div>
-                <label className="label-text">Reflection 内容</label>
+                <label className="label-text">Reflection Content</label>
                 <textarea rows={5} className="input-field"
                   value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} />
               </div>
               {error && <p className="text-sm text-red-600">{error}</p>}
               <div className="flex gap-2">
-                <button type="submit" className="btn-primary">保存</button>
-                <button type="button" className="btn-secondary" onClick={() => setShowForm(false)}>取消</button>
+                <button type="submit" className="btn-primary">Save</button>
+                <button type="button" className="btn-secondary" onClick={() => setShowForm(false)}>Cancel</button>
               </div>
             </form>
           ) : selected ? (
@@ -161,12 +161,12 @@ export default function ReflectionNotes() {
                 </div>
                 <span className="status-pill bg-moss-50 text-moss-700">{statusLabel(selected.status)}</span>
               </div>
-              <p className="text-sm text-ink whitespace-pre-wrap">{selected.content || '（无内容）'}</p>
+              <p className="text-sm text-ink whitespace-pre-wrap">{selected.content || '(No content)'}</p>
 
               <div>
-                <p className="label-text">附件</p>
+                <p className="label-text">Attachments</p>
                 {selected.attachments.length === 0 ? (
-                  <p className="text-sm text-slate-400">暂无附件</p>
+                  <p className="text-sm text-slate-400">No attachments yet</p>
                 ) : (
                   <ul className="space-y-1">
                     {selected.attachments.map((a) => (
@@ -183,18 +183,18 @@ export default function ReflectionNotes() {
                   </ul>
                 )}
                 <label className="btn-secondary inline-block mt-3 cursor-pointer">
-                  {uploading ? '上传中…' : '上传附件/图片'}
+                  {uploading ? 'Uploading…' : 'Upload Attachment/Image'}
                   <input type="file" className="hidden" onChange={handleFileUpload} disabled={uploading} />
                 </label>
               </div>
 
               <div className="flex gap-2 pt-2 border-t border-moss-100">
-                <button className="btn-secondary" onClick={() => openEdit(selected)}>编辑</button>
-                <button className="text-sm text-red-600 hover:underline" onClick={() => handleDelete(selected.id)}>删除</button>
+                <button className="btn-secondary" onClick={() => openEdit(selected)}>Edit</button>
+                <button className="text-sm text-red-600 hover:underline" onClick={() => handleDelete(selected.id)}>Delete</button>
               </div>
             </div>
           ) : (
-            <div className="card p-5 text-sm text-slate-400">选择左侧的一条记录查看详情</div>
+            <div className="card p-5 text-sm text-slate-400">Select a record on the left to view details</div>
           )}
         </div>
       </div>
@@ -203,7 +203,7 @@ export default function ReflectionNotes() {
 }
 
 function statusLabel(status) {
-  return { draft: '草稿', submitted: '已提交', reviewed: '已审核' }[status] || status
+  return { draft: 'Draft', submitted: 'Submitted', reviewed: 'Reviewed' }[status] || status
 }
 
 async function downloadWithAuth(e, id, filename) {

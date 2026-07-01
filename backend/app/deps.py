@@ -18,13 +18,13 @@ def get_current_user(
     except ValueError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="登录已过期，请重新登录",
+            detail="Session expired, please log in again",
         )
 
     user = db.query(models.User).filter(models.User.id == payload.get("sub")).first()
     if user is None or user.is_active == 0:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="账户不存在或已被禁用",
+            detail="Account does not exist or has been disabled",
         )
     return user

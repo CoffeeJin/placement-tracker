@@ -5,7 +5,8 @@ from app.database import Base, engine
 from app.config import settings
 from app.routers import auth, placement_logs, reflection_notes, attachments, dashboard
 
-# MVP 阶段直接建表；后续如需变更 schema，建议改用 alembic migration 而不是继续用 create_all
+# Tables are created directly during the MVP stage; if the schema needs to change later,
+# switch to an alembic migration instead of continuing to rely on create_all.
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Placement Tracker API")

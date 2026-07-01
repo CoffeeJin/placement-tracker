@@ -109,5 +109,5 @@ class DashboardSummary(BaseModel):
     role: UserRole
     placement_log_count: int
     reflection_note_count: int
-    open_case_count: int  # 预留字段，MVP 阶段恒为 0
-    unread_feedback_count: int  # 预留字段，MVP 阶段恒为 0
+    open_case_count: int  # Reserved field, always 0 during the MVP stage
+    unread_feedback_count: int  # Reserved field, always 0 during the MVP stage

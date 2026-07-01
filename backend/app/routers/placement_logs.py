@@ -15,10 +15,10 @@ router = APIRouter(prefix="/placement-logs", tags=["placement-logs"])
 def _get_owned_log(db: Session, log_id: str, user: models.User) -> models.PlacementLog:
     log = db.query(models.PlacementLog).filter(models.PlacementLog.id == log_id).first()
     if not log:
-        raise HTTPException(status_code=404, detail="记录不存在")
-    # 数据隔离：只能操作自己的记录（supervisor 的读取权限留待后续 review 功能实现）
+        raise HTTPException(status_code=404, detail="Record not found")
+    # Data isolation: users can only operate on their own records (supervisor read access is deferred to the review feature).
     if log.user_id != user.id:
-        raise HTTPException(status_code=403, detail="无权访问此记录")
+        raise HTTPException(status_code=403, detail="You do not have permission to access this record")
     return log
 
 
@@ -60,9 +60,10 @@ def update_log(
     user: models.User = Depends(get_current_user),
 ):
     log = _get_owned_log(db, log_id, user)
-    # 已审核的记录锁定，不允许修改（为未来 review 功能预留的规则，MVP 阶段 status 恒为 draft，不影响当前使用）
+    # Reviewed records are locked and cannot be modified (a rule reserved for the future review feature;
+    # status is always draft during the MVP stage, so this does not affect current usage).
     if log.status == models.NoteStatus.reviewed:
-        raise HTTPException(status_code=400, detail="该记录已审核，无法修改")
+        raise HTTPException(status_code=400, detail="This record has already been reviewed and cannot be modified")
     for field, value in payload.model_dump(exclude_unset=True).items():
         setattr(log, field, value)
     db.commit()
@@ -74,7 +75,7 @@ def update_log(
 def delete_log(log_id: str, db: Session = Depends(get_db), user: models.User = Depends(get_current_user)):
     log = _get_owned_log(db, log_id, user)
     if log.status == models.NoteStatus.reviewed:
-        raise HTTPException(status_code=400, detail="该记录已审核，无法删除")
+        raise HTTPException(status_code=400, detail="This record has already been reviewed and cannot be deleted")
     db.delete(log)
     db.commit()
     return {"ok": True}
@@ -92,13 +93,13 @@ async def upload_attachment(
     contents = await file.read()
     max_bytes = settings.MAX_UPLOAD_SIZE_MB * 1024 * 1024
     if len(contents) > max_bytes:
-        raise HTTPException(status_code=400, detail=f"文件超过 {settings.MAX_UPLOAD_SIZE_MB}MB 限制")
+        raise HTTPException(status_code=400, detail=f"File exceeds the {settings.MAX_UPLOAD_SIZE_MB}MB limit")
 
     allowed_types = {"image/png", "image/jpeg", "image/gif", "image/webp", "application/pdf",
                       "application/msword",
                       "application/vnd.openxmlformats-officedocument.wordprocessingml.document"}
     if file.content_type not in allowed_types:
-        raise HTTPException(status_code=400, detail="不支持的文件类型")
+        raise HTTPException(status_code=400, detail="Unsupported file type")
 
     os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
     ext = os.path.splitext(file.filename)[1]

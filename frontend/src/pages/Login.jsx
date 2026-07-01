@@ -18,7 +18,7 @@ export default function Login() {
       await login(username, password)
       navigate('/')
     } catch (err) {
-      setError(err.response?.data?.detail || '登录失败，请检查用户名或密码')
+      setError(err.response?.data?.detail || 'Login failed, please check your username or password')
     } finally {
       setSubmitting(false)
     }
@@ -29,11 +29,11 @@ export default function Login() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <p className="font-display text-2xl text-moss-700 font-semibold">Placement Journal</p>
-          <p className="text-sm text-slate-400 mt-1">登录以继续记录你的实习历程</p>
+          <p className="text-sm text-slate-400 mt-1">Log in to continue your placement journey</p>
         </div>
         <form onSubmit={handleSubmit} className="card p-6 space-y-4">
           <div>
-            <label className="label-text">用户名</label>
+            <label className="label-text">Username</label>
             <input
               className="input-field"
               value={username}
@@ -43,7 +43,7 @@ export default function Login() {
             />
           </div>
           <div>
-            <label className="label-text">密码</label>
+            <label className="label-text">Password</label>
             <input
               type="password"
               className="input-field"
@@ -54,11 +54,11 @@ export default function Login() {
           </div>
           {error && <p className="text-sm text-red-600">{error}</p>}
           <button type="submit" className="btn-primary w-full" disabled={submitting}>
-            {submitting ? '登录中…' : '登录'}
+            {submitting ? 'Logging in…' : 'Log In'}
           </button>
         </form>
         <p className="text-xs text-slate-400 text-center mt-4">
-          账号由管理员创建，暂不支持自助注册
+          Accounts are created by an administrator; self-service registration is not supported
         </p>
       </div>
     </div>

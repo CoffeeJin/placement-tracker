@@ -2,8 +2,8 @@ import { NavLink } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
 
 const navItems = [
-  { to: '/', label: '主页', end: true },
-  { to: '/placement-logs', label: '实习记录' },
+  { to: '/', label: 'Home', end: true },
+  { to: '/placement-logs', label: 'Placement Logs' },
   { to: '/reflection-notes', label: 'Reflection Notes' },
 ]
 
@@ -15,7 +15,7 @@ export default function Layout({ children }) {
       <aside className="w-60 shrink-0 border-r border-moss-100 bg-white flex flex-col">
         <div className="px-6 py-6 border-b border-moss-100">
           <p className="font-display text-lg text-moss-700 font-semibold">Placement Journal</p>
-          <p className="text-xs text-slate-400 mt-0.5">实习记录与督导系统</p>
+          <p className="text-xs text-slate-400 mt-0.5">Placement & Supervision System</p>
         </div>
         <nav className="flex-1 px-3 py-4 space-y-1">
           {navItems.map((item) => (
@@ -38,10 +38,10 @@ export default function Layout({ children }) {
         <div className="px-4 py-4 border-t border-moss-100">
           <p className="text-sm font-medium text-ink">{user?.full_name}</p>
           <p className="text-xs text-slate-400 mb-3">
-            {user?.role === 'student' ? '实习生' : user?.role === 'supervisor' ? '督导' : '管理员'}
+            {user?.role === 'student' ? 'Student' : user?.role === 'supervisor' ? 'Supervisor' : 'Admin'}
           </p>
           <button onClick={logout} className="text-xs text-moss-600 hover:underline">
-            退出登录
+            Log Out
           </button>
         </div>
       </aside>

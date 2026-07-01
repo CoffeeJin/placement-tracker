@@ -1,7 +1,8 @@
 """
-手动创建账号的脚本。因为系统不开放注册，新增学生/督导账号都通过这个脚本完成。
+Script for manually creating accounts. Since the system does not support open registration,
+new student/supervisor accounts are all created through this script.
 
-用法：
+Usage:
     python -m app.seed --username alice --password "some-strong-pw" --full-name "Alice Chen" --role student
 """
 import argparse
@@ -23,7 +24,7 @@ def main():
     try:
         existing = db.query(models.User).filter(models.User.username == args.username).first()
         if existing:
-            print(f"用户名 {args.username} 已存在，取消创建。")
+            print(f"Username {args.username} already exists, aborting creation.")
             return
 
         user = models.User(
@@ -35,7 +36,7 @@ def main():
         )
         db.add(user)
         db.commit()
-        print(f"账号创建成功：{args.username} ({args.role})")
+        print(f"Account created successfully: {args.username} ({args.role})")
     finally:
         db.close()
 
