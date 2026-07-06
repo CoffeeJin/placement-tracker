@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext.jsx'
 export default function Login() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const { login } = useAuth()
@@ -44,13 +45,22 @@ export default function Login() {
           </div>
           <div>
             <label className="label-text">Password</label>
-            <input
-              type="password"
-              className="input-field"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                className="input-field pr-14"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                className="absolute inset-y-0 right-0 px-3 text-xs font-medium text-moss-600 hover:text-moss-700"
+              >
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
+            </div>
           </div>
           {error && <p className="text-sm text-red-600">{error}</p>}
           <button type="submit" className="btn-primary w-full" disabled={submitting}>

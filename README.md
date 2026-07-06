@@ -31,6 +31,12 @@ Tables are created automatically on first startup. Since registration is not ope
 python -m app.seed --username alice --password "a-strong-password" --full-name "Alice Chen" --role student
 ```
 
+If a user forgets their password, reset it with:
+
+```bash
+python -m app.reset_password --username alice --password "a-new-strong-password"
+```
+
 Visit http://localhost:8000/docs to see the auto-generated API documentation.
 
 ## Frontend Setup
