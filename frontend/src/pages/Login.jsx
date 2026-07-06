@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext.jsx'
 
 export default function Login() {
@@ -68,7 +68,7 @@ export default function Login() {
           </button>
         </form>
         <p className="text-xs text-slate-400 text-center mt-4">
-          Accounts are created by an administrator; self-service registration is not supported
+          Don't have an account? <Link to="/register" className="text-moss-600 hover:underline">Register</Link>
         </p>
       </div>
     </div>

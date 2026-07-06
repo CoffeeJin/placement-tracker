@@ -1,7 +1,7 @@
 from datetime import date, datetime
 from typing import Optional, List
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, EmailStr
 
 from app.models import UserRole, NoteStatus
 
@@ -16,6 +16,21 @@ class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
     expires_at: datetime
+
+
+class RegisterRequest(BaseModel):
+    username: str
+    email: EmailStr
+    full_name: str
+    password: str
+
+
+class VerifyEmailRequest(BaseModel):
+    token: str
+
+
+class MessageResponse(BaseModel):
+    message: str
 
 
 class UserOut(BaseModel):

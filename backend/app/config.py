@@ -10,6 +10,10 @@ class Settings(BaseSettings):
     MAX_UPLOAD_SIZE_MB: int = 15
     CORS_ORIGINS: str = "http://localhost:5173"
 
+    RESEND_API_KEY: str = ""
+    EMAIL_FROM: str = "Placement Journal <onboarding@resend.dev>"
+    EMAIL_VERIFICATION_EXPIRE_MINUTES: int = 60 * 24
+
     class Config:
         env_file = ".env"
 

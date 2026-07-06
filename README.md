@@ -1,6 +1,6 @@
 # Placement Journal — MVP
 
-A social work placement record system. MVP stage: login + Placement Log + Reflection Note + Dashboard.
+A social work placement record system. MVP stage: login + self-service registration (email verification) + Placement Log + Reflection Note + Dashboard.
 Data structures for Case Note / Review-Feedback / Supervisor roles are reserved but not yet exposed via API or UI.
 
 ## Directory Structure
@@ -25,7 +25,9 @@ docker compose up -d               # start a local PostgreSQL (skip this if you 
 uvicorn app.main:app --reload --port 8000
 ```
 
-Tables are created automatically on first startup. Since registration is not open to the public, use the script below to create the first account:
+Tables are created automatically on first startup. Students can create their own account through the frontend's
+"Register" page (see [Email Registration Setup](#email-registration-setup) below). Supervisor and admin accounts are
+not self-serve — create them with the script below:
 
 ```bash
 python -m app.seed --username alice --password "a-strong-password" --full-name "Alice Chen" --role student
@@ -49,6 +51,22 @@ npm run dev
 ```
 
 Visit http://localhost:5173 and log in with the account you just created.
+
+## Email Registration Setup
+
+Self-registered accounts start out inactive (reusing the existing `is_active` flag — no new database column) and can't
+log in until the user clicks the verification link sent to their email. Emails are sent via [Resend](https://resend.com):
+
+1. Create a Resend account and verify a sending domain (or use their `onboarding@resend.dev` test sender for local dev).
+2. Copy your Resend API key into `backend/.env`:
+   ```
+   RESEND_API_KEY=re_your_api_key_here
+   EMAIL_FROM=Placement Journal <onboarding@resend.dev>
+   EMAIL_VERIFICATION_EXPIRE_MINUTES=1440
+   ```
+3. The verification link is built from the **first** origin listed in `CORS_ORIGINS`, so that value must point to
+   wherever the frontend is actually reachable (not `localhost` in production).
+4. If sending the email fails, the newly created account is rolled back — the user can just try registering again.
 
 ## Deploying to Your Own Server (Key Points)
 
